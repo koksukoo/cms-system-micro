@@ -14,7 +14,7 @@ func main() {
 	pr.HandleFunc("/", controllers.CreateProject).Methods("POST")
 	pr.HandleFunc("/{id}", controllers.GetProject).Methods("GET")
 	pr.HandleFunc("/{id}", controllers.UpdateProject).Methods("PUT")
-	pr.HandleFunc("/{id}", controllers.DeleteProject).Methods("Delete")
+	pr.HandleFunc("/{id}", controllers.DeleteProject).Methods("DELETE")
 
 	if err := http.ListenAndServe(":5000", r); err != nil {
 		log.Fatal(err)
