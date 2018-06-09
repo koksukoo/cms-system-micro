@@ -11,6 +11,14 @@ import (
 	"github.com/mikkokokkoniemi/cms-system-micro/engine/models"
 )
 
+var dao = database.MongoDAO{}
+
+func init() {
+	dao.Server = "localhost"
+	dao.Database = "cms_engine"
+	dao.Connect()
+}
+
 func respondError(w http.ResponseWriter, code int, msg string) {
 	respondJSON(w, code, map[string]string{"error": msg})
 }
@@ -27,12 +35,12 @@ func CreateProject(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	var project models.Project
 	if err := json.NewDecoder(r.Body).Decode(&project); err != nil {
-		respondError(w, http.StatusBadRequest)
+		respondError(w, http.StatusBadRequest, "Bad request, baby")
 		return
 	}
 	project.ID = bson.NewObjectId()
-	if err := database.InsertProject(project); err != nil {
-		respondError(w, http.StatusInternalServerError)
+	if err := dao.InsertProject(project); err != nil {
+		respondError(w, http.StatusInternalServerError, "Oh no! It doesn't work")
 		return
 	}
 	respondJSON(w, http.StatusOK, project)

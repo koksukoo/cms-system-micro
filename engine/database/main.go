@@ -31,7 +31,7 @@ func (m *MongoDAO) Connect() {
 	db = session.DB(m.Database)
 }
 
-// Close ends the connection to db. This should not be used until application closes
+// Close ends the connection to db. This should not be used when application closes
 func (m *MongoDAO) Close() {
 	if db == nil {
 		return
