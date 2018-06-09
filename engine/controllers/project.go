@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/globalsign/mgo/bson"
 
@@ -39,6 +40,8 @@ func CreateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	project.ID = bson.NewObjectId()
+	project.Created = time.Now()
+	project.Modified = time.Now()
 	if err := dao.InsertProject(project); err != nil {
 		respondError(w, http.StatusInternalServerError, "Oh no! It doesn't work")
 		return
