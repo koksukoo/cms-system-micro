@@ -6,7 +6,15 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mikkokokkoniemi/cms-system-micro/engine/controllers"
+	"github.com/mikkokokkoniemi/cms-system-micro/engine/database"
 )
+
+var dao = database.MongoDAO{}
+
+func init() {
+	dao.Server = "localhost"
+	dao.Database = "cms_engine"
+}
 
 func main() {
 	r := mux.NewRouter()

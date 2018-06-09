@@ -1,13 +1,41 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/globalsign/mgo/bson"
+
+	"github.com/mikkokokkoniemi/cms-system-micro/engine/database"
+	"github.com/mikkokokkoniemi/cms-system-micro/engine/models"
 )
+
+func respondError(w http.ResponseWriter, code int, msg string) {
+	respondJSON(w, code, map[string]string{"error": msg})
+}
+
+func respondJSON(w http.ResponseWriter, code int, payload interface{}) {
+	response, _ := json.Marshal(payload)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	w.Write(response)
+}
 
 // CreateProject creates a new project
 func CreateProject(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "not implemented yet!")
+	defer r.Body.Close()
+	var project models.Project
+	if err := json.NewDecoder(r.Body).Decode(&project); err != nil {
+		respondError(w, http.StatusBadRequest)
+		return
+	}
+	project.ID = bson.NewObjectId()
+	if err := database.InsertProject(project); err != nil {
+		respondError(w, http.StatusInternalServerError)
+		return
+	}
+	respondJSON(w, http.StatusOK, project)
 }
 
 // GetProject returns a project hierarchy
