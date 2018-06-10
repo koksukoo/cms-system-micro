@@ -42,7 +42,7 @@ func ListProjects(w http.ResponseWriter, r *http.Request) {
 
 // GetProject returns a project hierarchy
 func GetProject(w http.ResponseWriter, r *http.Request) {
-	project, err := dao.FindProjectByID(mux.Vars(r)["id"])
+	project, err := dao.FindProjectByID(mux.Vars(r)["projectId"])
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -69,7 +69,7 @@ func UpdateProject(w http.ResponseWriter, r *http.Request) {
 // DeleteProject removes project completely
 func DeleteProject(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if err := dao.DeleteProject(mux.Vars(r)["id"]); err != nil {
+	if err := dao.DeleteProject(mux.Vars(r)["projectId"]); err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
