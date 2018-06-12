@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -11,9 +10,55 @@ import (
 	"github.com/mikkokokkoniemi/cms-system-micro/engine/models"
 )
 
+type hierarchyItem struct {
+	ID       string
+	Title    string
+	Slug     string
+	Children map[string]hierarchyItem
+}
+
 // GetPagesHierarchy returns a json map of page id's and titles in correct hierarchy
 func GetPagesHierarchy(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Not implemented")
+	pages, err := dao.FindAllPages()
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	// var hierarchy map[string]hierarchyItem
+	var hierarchy = make(map[string]hierarchyItem)
+
+	for _, page := range pages {
+		hierarchy = appendToHierarchy(
+			hierarchy,
+			page.Ancestors,
+			hierarchyItem{page.ID.Hex(), page.Title, page.Slug, make(map[string]hierarchyItem)})
+	}
+
+	respondJSON(w, http.StatusOK, hierarchy)
+}
+
+// map is safe to pass by value because it's alway a pointer
+func appendToHierarchy(hierarchy map[string]hierarchyItem, ancestors []string, item hierarchyItem) map[string]hierarchyItem {
+
+	if len(ancestors) > 0 {
+		if ha, ok := hierarchy[ancestors[0]]; ok {
+			ha.Children = appendToHierarchy(ha.Children, ancestors[1:], item)
+		} else {
+			hierarchy[ancestors[0]] = hierarchyItem{"", "", "", map[string]hierarchyItem{item.ID: item}}
+		}
+		return hierarchy
+	}
+
+	var children map[string]hierarchyItem
+
+	if parent, ok := hierarchy[item.ID]; ok {
+		children = parent.Children
+	} else {
+		children = make(map[string]hierarchyItem)
+	}
+	hierarchy[item.ID] = hierarchyItem{item.ID, item.Title, item.Slug, children}
+	return hierarchy
 }
 
 // CreatePage creates new page and sets ancestor-field in place
@@ -29,13 +74,11 @@ func CreatePage(w http.ResponseWriter, r *http.Request) {
 	page.Created = time.Now()
 	page.Modified = time.Now()
 
-	if page.Parent == "" {
-		page.Parent = page.ID.Hex()
-	}
-
-	parent, err := dao.FindPageByID(page.Parent)
-	if err == nil {
-		page.Ancestors = append(parent.Ancestors, page.Parent)
+	if page.Parent != "" {
+		parent, err := dao.FindPageByID(page.Parent)
+		if err == nil {
+			page.Ancestors = append(parent.Ancestors, page.Parent)
+		}
 	}
 
 	if err := dao.InsertPage(page); err != nil {
