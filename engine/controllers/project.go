@@ -21,6 +21,7 @@ func CreateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	project.ID = bson.NewObjectId()
+	project.Slug, _ = hashid.Encode([]int{int(project.ID.Counter())})
 	project.Created = time.Now()
 	project.Modified = time.Now()
 	if err := dao.InsertProject(project); err != nil {
@@ -42,7 +43,7 @@ func ListProjects(w http.ResponseWriter, r *http.Request) {
 
 // GetProject returns a project hierarchy
 func GetProject(w http.ResponseWriter, r *http.Request) {
-	project, err := dao.FindProjectByID(mux.Vars(r)["projectId"])
+	project, err := dao.FindProjectByField("slug", mux.Vars(r)["projectId"])
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -50,7 +51,7 @@ func GetProject(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, project)
 }
 
-// UpdateProject updates project hierarchy and owners
+// UpdateProject updates project
 func UpdateProject(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	var project models.Project
@@ -69,7 +70,7 @@ func UpdateProject(w http.ResponseWriter, r *http.Request) {
 // DeleteProject removes project completely
 func DeleteProject(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if err := dao.DeleteProject(mux.Vars(r)["projectId"]); err != nil {
+	if err := dao.DeleteProjectByField("slug", mux.Vars(r)["projectId"]); err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}

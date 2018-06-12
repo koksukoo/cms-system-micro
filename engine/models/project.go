@@ -9,6 +9,7 @@ import (
 // Project is the top-tier model in system
 type Project struct {
 	ID       bson.ObjectId `bson:"_id" json:"id"`
+	Slug     string        `bson:"slug" json:"slug"`
 	Title    string        `bson:"title" json:"title"`
 	Created  time.Time     `bson:"created" json:"created"`
 	Modified time.Time     `bson:"modified" json:"modified"`

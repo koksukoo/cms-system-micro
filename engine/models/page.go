@@ -8,7 +8,7 @@ import (
 
 // Page corresponds to normal webpage. Can also be a portion of webpage
 type Page struct {
-	ID        bson.ObjectId     `bson:"_id" json:"id"`
+	ID        bson.ObjectId     `bson:"_id" json:"-"`
 	Slug      string            `bson:"slug" json:"slug"`
 	Title     string            `bson:"title" json:"title"`
 	Template  string            `bson:"template" json:"template"`

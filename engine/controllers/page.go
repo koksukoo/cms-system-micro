@@ -11,7 +11,6 @@ import (
 )
 
 type hierarchyItem struct {
-	ID       string
 	Title    string
 	Slug     string
 	Children map[string]hierarchyItem
@@ -32,7 +31,7 @@ func GetPagesHierarchy(w http.ResponseWriter, r *http.Request) {
 		hierarchy = appendToHierarchy(
 			hierarchy,
 			page.Ancestors,
-			hierarchyItem{page.ID.Hex(), page.Title, page.Slug, make(map[string]hierarchyItem)})
+			hierarchyItem{page.Title, page.Slug, make(map[string]hierarchyItem)})
 	}
 
 	respondJSON(w, http.StatusOK, hierarchy)
@@ -45,19 +44,19 @@ func appendToHierarchy(hierarchy map[string]hierarchyItem, ancestors []string, i
 		if ha, ok := hierarchy[ancestors[0]]; ok {
 			ha.Children = appendToHierarchy(ha.Children, ancestors[1:], item)
 		} else {
-			hierarchy[ancestors[0]] = hierarchyItem{"", "", "", map[string]hierarchyItem{item.ID: item}}
+			hierarchy[ancestors[0]] = hierarchyItem{"", "", map[string]hierarchyItem{item.Slug: item}}
 		}
 		return hierarchy
 	}
 
 	var children map[string]hierarchyItem
 
-	if parent, ok := hierarchy[item.ID]; ok {
+	if parent, ok := hierarchy[item.Slug]; ok {
 		children = parent.Children
 	} else {
 		children = make(map[string]hierarchyItem)
 	}
-	hierarchy[item.ID] = hierarchyItem{item.ID, item.Title, item.Slug, children}
+	hierarchy[item.Slug] = hierarchyItem{item.Title, item.Slug, children}
 	return hierarchy
 }
 
@@ -75,7 +74,7 @@ func CreatePage(w http.ResponseWriter, r *http.Request) {
 	page.Modified = time.Now()
 
 	if page.Parent != "" {
-		parent, err := dao.FindPageByID(page.Parent)
+		parent, err := dao.FindPageByField("slug", page.Parent)
 		if err == nil {
 			page.Ancestors = append(parent.Ancestors, page.Parent)
 		}
@@ -90,7 +89,7 @@ func CreatePage(w http.ResponseWriter, r *http.Request) {
 
 // GetPage returns a single page
 func GetPage(w http.ResponseWriter, r *http.Request) {
-	page, err := dao.FindPageByID(mux.Vars(r)["pageId"])
+	page, err := dao.FindPageByField("slug", mux.Vars(r)["pageId"])
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -107,7 +106,7 @@ func UpdatePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	page.Modified = time.Now()
-	parent, err := dao.FindPageByID(page.Parent)
+	parent, err := dao.FindPageByField("slug", page.Parent)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -124,7 +123,7 @@ func UpdatePage(w http.ResponseWriter, r *http.Request) {
 // DeletePage deletes a sigle page
 func DeletePage(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	if err := dao.DeletePage(mux.Vars(r)["pageId"]); err != nil {
+	if err := dao.DeletePageByField("slug", mux.Vars(r)["pageId"]); err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}

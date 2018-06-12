@@ -20,20 +20,33 @@ func (m *MongoDAO) FindPageByID(id string) (models.Page, error) {
 	return page, err
 }
 
-// InsertPage creates a project entity in db
+// FindPageByField fetches a single page entry by given field
+func (m *MongoDAO) FindPageByField(field string, value string) (models.Page, error) {
+	var page models.Page
+	err := db.C(PageCollection).Find(bson.M{field: value}).One(&page)
+	return page, err
+}
+
+// InsertPage creates a page entity in db
 func (m *MongoDAO) InsertPage(page models.Page) error {
 	err := db.C(PageCollection).Insert(&page)
 	return err
 }
 
-// UpdatePage updates a project entity in db
+// UpdatePage updates a page entity in db
 func (m *MongoDAO) UpdatePage(page models.Page) error {
 	err := db.C(PageCollection).UpdateId(page.ID, &page)
 	return err
 }
 
-// DeletePage deletes a project by id
+// DeletePage deletes a page by id
 func (m *MongoDAO) DeletePage(id string) error {
 	err := db.C(PageCollection).RemoveId(bson.ObjectIdHex(id))
+	return err
+}
+
+// DeletePageByField deletes a page by given field
+func (m *MongoDAO) DeletePageByField(field string, value string) error {
+	err := db.C(PageCollection).Remove(bson.M{field: value})
 	return err
 }
