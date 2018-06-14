@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>Desktop</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="20" y="205" width="986" height="291"></rect>
+        <filter x="-0.9%" y="-3.1%" width="101.8%" height="106.2%" filterUnits="objectBoundingBox" id="filter-2">
+            <feMorphology radius="1.5" operator="erode" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="0" dy="0" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.3 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#9961FA" offset="0%"></stop>
+            <stop stop-color="#771CF7" offset="100%"></stop>
+        </linearGradient>
+        <rect id="path-4" x="20" y="541" width="988" height="133"></rect>
+        <filter x="-1.4%" y="-10.2%" width="102.7%" height="120.3%" filterUnits="objectBoundingBox" id="filter-5">
+            <feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Desktop" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle-2" stroke="#979797" fill="#FFFFFF" x="-31.5" y="-3.5" width="1063" height="106"></rect>
+        <rect id="Rectangle-2" fill="#091C3A" x="-9" y="102" width="1065" height="64"></rect>
+        <text id="Pages" font-family="AvenirNext-Regular, Avenir Next" font-size="14" font-weight="normal" letter-spacing="-0.02153846" fill="#FFFFFF">
+            <tspan x="40" y="140">Pages</tspan>
+        </text>
+        <text id="Templates" font-family="AvenirNext-Regular, Avenir Next" font-size="14" font-weight="normal" letter-spacing="-0.02153846" fill="#FFFFFF">
+            <tspan x="126" y="140">Templates</tspan>
+            <tspan x="191.228154" y="140" font-size="20"></tspan>
+        </text>
+        <text id="CMS-Editor" font-family="AvenirNext-Bold, Avenir Next" font-size="18" font-weight="bold" letter-spacing="-0.02153846" fill="#091C3A">
+            <tspan x="36" y="59">CMS </tspan>
+            <tspan x="80.7698462" y="59" font-family="AvenirNext-Regular, Avenir Next" font-weight="normal">Editor</tspan>
+        </text>
+        <text id="Hello,-Mikko" font-family="AvenirNext-Regular, Avenir Next" font-size="14" font-weight="normal" letter-spacing="-0.02153846" fill="#091C3A">
+            <tspan x="848" y="58">Hello, Mikko</tspan>
+        </text>
+        <circle id="Oval" fill="#D8D8D8" cx="971" cy="53" r="23"></circle>
+        <polygon id="Triangle" fill="#091C3A" points="55.7139804 171.970375 67.6890589 165.063053 44 165"></polygon>
+        <rect id="Rectangle-3" fill="#142746" x="778" y="122" width="205" height="28"></rect>
+        <text id="Search..." font-family="AvenirNext-Regular, Avenir Next" font-size="12" font-weight="normal" letter-spacing="-0.02153846" fill="#73839C">
+            <tspan x="808" y="140">Search…</tspan>
+        </text>
+        <g id="Rectangle-4">
+            <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+        </g>
+        <text id="+-New-page" font-family="AvenirNext-Regular, Avenir Next" font-size="14" font-weight="normal" letter-spacing="-0.02153846" fill="#091C3A">
+            <tspan x="890" y="245">+ New page</tspan>
+        </text>
+        <text id="Front-Page" font-family="AvenirNext-Medium, Avenir Next" font-size="14" font-weight="400" letter-spacing="-0.02153846" fill="#091C3A">
+            <tspan x="61" y="316">Front Page</tspan>
+        </text>
+        <text id="Front-template" font-family="AvenirNext-Regular, Avenir Next" font-size="14" font-weight="normal" letter-spacing="-0.02153846" fill="#9B9B9B">
+            <tspan x="160" y="317">Front template</tspan>
+        </text>
+        <text id="active" font-family="AvenirNext-Regular, Avenir Next" font-size="14" font-weight="normal" letter-spacing="-0.02153846" fill="#9B9B9B">
+            <tspan x="890" y="319">active</tspan>
+        </text>
+        <text id="Site-map" font-family="AvenirNext-Medium, Avenir Next" font-size="18" font-weight="400" letter-spacing="-0.02153846" fill="#4A4A4A">
+            <tspan x="62" y="246">Site map</tspan>
+        </text>
+        <circle id="Path" fill="#B8E986" cx="949.5" cy="314.5" r="5.5"></circle>
+        <path d="M1005.50051,269.5 L20.4590089,269.5" id="Line" stroke="#F0F0F0" fill="#B8E986" stroke-linecap="square"></path>
+        <circle id="Path" fill="#B8E986" cx="949.5" cy="358.5" r="5.5"></circle>
+        <text id="active" font-family="AvenirNext-Regular, Avenir Next" font-size="14" font-weight="normal" letter-spacing="-0.02153846" fill="#9B9B9B">
+            <tspan x="891" y="363">active</tspan>
+        </text>
+        <path d="M96.5,362.5 L76.4750156,362.5" id="Line-2" stroke="#091C3A" stroke-linecap="square"></path>
+        <text id="General-template" font-family="AvenirNext-Regular, Avenir Next" font-size="14" font-weight="normal" letter-spacing="-0.02153846" fill="#9B9B9B">
+            <tspan x="222" y="368">General template</tspan>
+        </text>
+        <text id="About-Page" font-family="AvenirNext-Medium, Avenir Next" font-size="14" font-weight="400" letter-spacing="-0.02153846" fill="#091C3A">
+            <tspan x="116" y="366">About Page</tspan>
+        </text>
+        <circle id="Path" fill="#9B9B9B" cx="948.5" cy="396.5" r="5.5"></circle>
+        <text id="inactive" font-family="AvenirNext-Regular, Avenir Next" font-size="14" font-weight="normal" letter-spacing="-0.02153846" fill="#9B9B9B">
+            <tspan x="882" y="401">inactive</tspan>
+        </text>
+        <path d="M95.5,400.5 L75.4750156,400.5" id="Line-2" stroke="#091C3A" stroke-linecap="square"></path>
+        <text id="General-template" font-family="AvenirNext-Regular, Avenir Next" font-size="14" font-weight="normal" letter-spacing="-0.02153846" fill="#9B9B9B">
+            <tspan x="221" y="406">General template</tspan>
+        </text>
+        <text id="Terms-Page" font-family="AvenirNext-Medium, Avenir Next" font-size="14" font-weight="400" letter-spacing="-0.02153846" fill="#091C3A">
+            <tspan x="115" y="404">Terms Page</tspan>
+        </text>
+        <g id="Rectangle-5">
+            <use fill="black" fill-opacity="1" filter="url(#filter-5)" xlink:href="#path-4"></use>
+            <use fill="url(#linearGradient-3)" fill-rule="evenodd" xlink:href="#path-4"></use>
+        </g>
+        <text id="Did-you-notice?" font-family="AvenirNext-DemiBold, Avenir Next" font-size="14" font-weight="500" letter-spacing="-0.02153846" fill="#FFFFFF">
+            <tspan x="459" y="581">Did you notice?</tspan>
+        </text>
+        <text id="There-are-many-varia" font-family="AvenirNext-Regular, Avenir Next" font-size="12" font-weight="normal" letter-spacing="-0.02153846" fill="#FFFFFF">
+            <tspan x="65" y="609">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words </tspan>
+            <tspan x="65" y="625">which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the </tspan>
+            <tspan x="65" y="641">middle of text. </tspan>
+            <tspan x="146.555385" y="641" font-family="AvenirNext-Medium, Avenir Next" font-weight="400" text-decoration="underline">Update to newest version now!</tspan>
+        </text>
+    </g>
+</svg>
