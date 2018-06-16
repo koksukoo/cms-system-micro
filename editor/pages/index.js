@@ -2,6 +2,6 @@ import Layout from '../components/BaseLayout'
 
 export default () => (
     <Layout>
-        <p>Hello</p>
+        <p>Pages</p>
     </Layout>
 )

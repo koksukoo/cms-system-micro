@@ -1,26 +1,31 @@
-import Link from 'next/link'
+import ProfileDropdown from './ProfileDropdown'
 
 const Header = () => (
-    <div>
-        <Link href="/">
-            <a>Home</a>
-        </Link>
-        <Link href="/edit">
-            <a>Edit</a>
-        </Link>
+    <header>
+        <h1>
+            <strong>CMS</strong> Editor
+        </h1>
+
+        <ProfileDropdown />
+        
         <style jsx>{`
-            a {
-                font-family: "Arial";
-                margin-right: 20px;
-                text-decoration: none;
-                color: blue;
+            background-color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+
+            strong {
+                padding: 0;
             }
 
-            a:hover {
-                opacity: 0.6;
+            h1 {
+                font-weight: 300;
+                padding: 0; 
             }
-            `}</style>
-    </div>
+        `}
+        </style>
+    </header>
 )
 
 export default Header
