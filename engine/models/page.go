@@ -19,15 +19,5 @@ type Page struct {
 	ProjectID string            `bson:"project_id" json:"projectId"`
 	Ancestors []string          `bson:"ancestors" json:"ancestors"`
 	Parent    string            `bson:"parent" json:"parent"`
+	Position  int               `bson:"position" json:"position"`
 }
-
-/*
- Tässä tarvitaan nyt rekursiivista ajattelua
-
- parenttiin mätsäävät lapsiksi -> lapsiin mätsäävät lapsiksi -> lapsiin mätsäävät lapsiksi
- matchParent(hierarchyItem)
-
- makeAncestors([x, 3, 5])
- jos ansestoria ei ole, luodaan template sille, jos on, ei tehdä mitään
- ancestor{id: $id, chidlren: makeAncestor(ancestors[:1])}
-*/

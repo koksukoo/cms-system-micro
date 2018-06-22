@@ -30,7 +30,7 @@ const Layout = (props) => (
                 text-rendering: geometricPrecision;
             }
             .content {
-                padding: 20px 0;
+                padding: 40px 20px;
             }
         `}</style>
     </div>

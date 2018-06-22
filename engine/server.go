@@ -6,9 +6,14 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mikkokokkoniemi/cms-system-micro/engine/controllers"
+	"github.com/rs/cors"
 )
 
 func main() {
+	// allowedHeaders := handlers.AllowedHeaders([]string{"X-Requested-With"})
+	// allowedOrigins := handlers.AllowedOrigins([]string{"*"})
+	// allowedMethods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
+
 	r := mux.NewRouter()
 	// https://hostname/projects/
 	pr := r.PathPrefix("/projects").Subrouter()
@@ -32,7 +37,13 @@ func main() {
 	tr.HandleFunc("/{templateId}", controllers.UpdateTemplate).Methods("PUT")
 	tr.HandleFunc("/{templateId}", controllers.DeleteTemplate).Methods("DELETE")
 
-	if err := http.ListenAndServe(":6000", r); err != nil {
-		log.Fatal(err)
-	}
+	handler := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowCredentials: true,
+		AllowedMethods:   []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"},
+		ExposedHeaders:   []string{"Access-Control-Allow-Origin", "Date", "Server", "Keep-Alive", "Connection", "Transfer-Encoding", "Content-Type"},
+	}).Handler(r)
+
+	log.Fatal(http.ListenAndServe(":6000", handler))
+
 }

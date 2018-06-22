@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/globalsign/mgo/bson"
@@ -10,10 +11,49 @@ import (
 	"github.com/mikkokokkoniemi/cms-system-micro/engine/models"
 )
 
+/*
+	Internally page controller models hierarchy in map, but outside it is returned as
+	slice, because it makes more sense that way.
+*/
+
+type hierarchySlice []slicedHierarchyItem
+type hierarchyMap map[string]hierarchyItem
+
 type hierarchyItem struct {
 	Title    string
 	Slug     string
-	Children map[string]hierarchyItem
+	Position int
+	Children hierarchyMap
+}
+
+type slicedHierarchyItem struct {
+	Title    string         `json:"title"`
+	Slug     string         `json:"slug"`
+	Position int            `json:"position"`
+	Children hierarchySlice `json:"children"`
+}
+
+// hierarchySlice implements sort.Sort interface to slicedHierarchyItem
+func (h hierarchySlice) Len() int           { return len(h) }
+func (h hierarchySlice) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h hierarchySlice) Less(i, j int) bool { return h[i].Position < h[j].Position }
+
+// SortedSlice transforms map to a slice sorted by page position
+func (h hierarchyMap) SortedSlice() []slicedHierarchyItem {
+	var sorted []slicedHierarchyItem
+
+	for _, item := range h {
+		var sliced slicedHierarchyItem
+
+		if len(item.Children) > 0 {
+			sliced = slicedHierarchyItem{item.Title, item.Slug, item.Position, item.Children.SortedSlice()}
+		} else {
+			sliced = slicedHierarchyItem{item.Title, item.Slug, item.Position, []slicedHierarchyItem{}}
+		}
+		sorted = append(sorted, sliced)
+	}
+	sort.Sort(hierarchySlice(sorted))
+	return sorted
 }
 
 // GetPagesHierarchy returns a json map of page id's and titles in correct hierarchy
@@ -25,16 +65,16 @@ func GetPagesHierarchy(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// var hierarchy map[string]hierarchyItem
-	var hierarchy = make(map[string]hierarchyItem)
+	var hierarchy = make(hierarchyMap)
 
 	for _, page := range pages {
 		hierarchy = appendToHierarchy(
 			hierarchy,
 			page.Ancestors,
-			hierarchyItem{page.Title, page.Slug, make(map[string]hierarchyItem)})
+			hierarchyItem{page.Title, page.Slug, page.Position, make(map[string]hierarchyItem)})
 	}
 
-	respondJSON(w, http.StatusOK, hierarchy)
+	respondJSON(w, http.StatusOK, hierarchy.SortedSlice())
 }
 
 // map is safe to pass by value because it's alway a pointer
@@ -44,7 +84,7 @@ func appendToHierarchy(hierarchy map[string]hierarchyItem, ancestors []string, i
 		if ha, ok := hierarchy[ancestors[0]]; ok {
 			ha.Children = appendToHierarchy(ha.Children, ancestors[1:], item)
 		} else {
-			hierarchy[ancestors[0]] = hierarchyItem{"", "", map[string]hierarchyItem{item.Slug: item}}
+			hierarchy[ancestors[0]] = hierarchyItem{"", "", 0, map[string]hierarchyItem{item.Slug: item}}
 		}
 		return hierarchy
 	}
@@ -56,7 +96,8 @@ func appendToHierarchy(hierarchy map[string]hierarchyItem, ancestors []string, i
 	} else {
 		children = make(map[string]hierarchyItem)
 	}
-	hierarchy[item.Slug] = hierarchyItem{item.Title, item.Slug, children}
+	hierarchy[item.Slug] = hierarchyItem{item.Title, item.Slug, item.Position, children}
+
 	return hierarchy
 }
 
