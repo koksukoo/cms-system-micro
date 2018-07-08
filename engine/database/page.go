@@ -9,7 +9,7 @@ import (
 // TODO: change to fetch only current user pages
 func (m *MongoDAO) FindAllPages() ([]models.Page, error) {
 	var pages []models.Page
-	err := db.C(PageCollection).Find(bson.M{}).All(&pages)
+	err := db.C(PageCollection).Find(bson.M{}).Sort("-created").All(&pages)
 	return pages, err
 }
 

@@ -10,10 +10,6 @@ import (
 )
 
 func main() {
-	// allowedHeaders := handlers.AllowedHeaders([]string{"X-Requested-With"})
-	// allowedOrigins := handlers.AllowedOrigins([]string{"*"})
-	// allowedMethods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
-
 	r := mux.NewRouter()
 	// https://hostname/projects/
 	pr := r.PathPrefix("/projects").Subrouter()
@@ -39,7 +35,7 @@ func main() {
 
 	handler := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
-		AllowCredentials: true,
+		AllowCredentials: false,
 		AllowedMethods:   []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"},
 		ExposedHeaders:   []string{"Access-Control-Allow-Origin", "Date", "Server", "Keep-Alive", "Connection", "Transfer-Encoding", "Content-Type"},
 	}).Handler(r)

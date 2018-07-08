@@ -24,6 +24,9 @@ type hierarchyItem struct {
 	Slug     string
 	Position int
 	Children hierarchyMap
+	Created  time.Time
+	Template string
+	IsActive bool
 }
 
 type slicedHierarchyItem struct {
@@ -31,12 +34,20 @@ type slicedHierarchyItem struct {
 	Slug     string         `json:"slug"`
 	Position int            `json:"position"`
 	Children hierarchySlice `json:"children"`
+	Created  time.Time      `json:"created"`
+	Template string         `json:"template"`
+	IsActive bool           `json:"isActive"`
 }
 
 // hierarchySlice implements sort.Sort interface to slicedHierarchyItem
-func (h hierarchySlice) Len() int           { return len(h) }
-func (h hierarchySlice) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
-func (h hierarchySlice) Less(i, j int) bool { return h[i].Position < h[j].Position }
+func (h hierarchySlice) Len() int      { return len(h) }
+func (h hierarchySlice) Swap(i, j int) { h[i], h[j] = h[j], h[i] }
+func (h hierarchySlice) Less(i, j int) bool {
+	if h[i].Position == h[j].Position {
+		return h[i].Created.Before(h[j].Created)
+	}
+	return h[i].Position < h[j].Position
+}
 
 // SortedSlice transforms map to a slice sorted by page position
 func (h hierarchyMap) SortedSlice() []slicedHierarchyItem {
@@ -46,9 +57,9 @@ func (h hierarchyMap) SortedSlice() []slicedHierarchyItem {
 		var sliced slicedHierarchyItem
 
 		if len(item.Children) > 0 {
-			sliced = slicedHierarchyItem{item.Title, item.Slug, item.Position, item.Children.SortedSlice()}
+			sliced = slicedHierarchyItem{item.Title, item.Slug, item.Position, item.Children.SortedSlice(), item.Created, item.Template, item.IsActive}
 		} else {
-			sliced = slicedHierarchyItem{item.Title, item.Slug, item.Position, []slicedHierarchyItem{}}
+			sliced = slicedHierarchyItem{item.Title, item.Slug, item.Position, []slicedHierarchyItem{}, item.Created, item.Template, item.IsActive}
 		}
 		sorted = append(sorted, sliced)
 	}
@@ -63,6 +74,10 @@ func GetPagesHierarchy(w http.ResponseWriter, r *http.Request) {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+	if len(pages) == 0 {
+		respondJSON(w, http.StatusOK, []string{})
+		return
+	}
 
 	// var hierarchy map[string]hierarchyItem
 	var hierarchy = make(hierarchyMap)
@@ -71,8 +86,9 @@ func GetPagesHierarchy(w http.ResponseWriter, r *http.Request) {
 		hierarchy = appendToHierarchy(
 			hierarchy,
 			page.Ancestors,
-			hierarchyItem{page.Title, page.Slug, page.Position, make(map[string]hierarchyItem)})
+			hierarchyItem{page.Title, page.Slug, page.Position, make(map[string]hierarchyItem), page.Created, page.Template, page.IsActive})
 	}
+	// hierarchy = appendToHierarchy(hierarchy, []string{}, hierarchyItem{"", "", 0, hierarchyMap{}, time.Now(), "", false})
 
 	respondJSON(w, http.StatusOK, hierarchy.SortedSlice())
 }
@@ -84,7 +100,7 @@ func appendToHierarchy(hierarchy map[string]hierarchyItem, ancestors []string, i
 		if ha, ok := hierarchy[ancestors[0]]; ok {
 			ha.Children = appendToHierarchy(ha.Children, ancestors[1:], item)
 		} else {
-			hierarchy[ancestors[0]] = hierarchyItem{"", "", 0, map[string]hierarchyItem{item.Slug: item}}
+			hierarchy[ancestors[0]] = hierarchyItem{"", "", 0, map[string]hierarchyItem{item.Slug: item}, time.Now(), "", false}
 		}
 		return hierarchy
 	}
@@ -96,7 +112,7 @@ func appendToHierarchy(hierarchy map[string]hierarchyItem, ancestors []string, i
 	} else {
 		children = make(map[string]hierarchyItem)
 	}
-	hierarchy[item.Slug] = hierarchyItem{item.Title, item.Slug, item.Position, children}
+	hierarchy[item.Slug] = hierarchyItem{item.Title, item.Slug, item.Position, children, item.Created, item.Template, item.IsActive}
 
 	return hierarchy
 }

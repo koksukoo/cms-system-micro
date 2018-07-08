@@ -3,13 +3,14 @@ import Layout from '../components/BaseLayout'
 import Widget from '../components/Widget'
 import HierarchyBody from '../components/widgets/Hierarchy'
 import { fetchPageHierarchy } from '../io';
+import Button from '../components/ActionButton'
 
 const Index = (props) => (
     <Layout>
         <Widget title="Site map">
             <Widget.Actions>
                 <Link href="/pages/new">
-                    <a>+ New page</a>
+                    <Button>+ New Page</Button>
                 </Link>
             </Widget.Actions>
 

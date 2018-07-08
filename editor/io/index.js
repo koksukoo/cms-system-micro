@@ -5,5 +5,14 @@ const dummyState = {
 }
 
 export const fetchPageHierarchy = () => {
-    return fetch(`http://localhost:3000/fetch/pages/`)
+    return fetch(`${process.env.BASE_URL}/api/projects/${dummyState.projectId}/pages/`)
+}
+
+export const createTemplate = (data = {}) => {
+    return fetch(`${process.env.BASE_URL}/api/projects/${dummyState.projectId}/templates/`, {
+        body: JSON.stringify(data),
+        headers: { 'content-type': 'application/json' },
+        method: 'POST',
+        mode: 'cors'
+    })
 }
