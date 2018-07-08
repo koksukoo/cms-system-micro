@@ -1,10 +1,14 @@
 import { Component } from 'react'
-import Layout from '../../components/BaseLayout'
-import Widget from '../../components/Widget'
-import Button from '../../components/ActionButton'
-import Input from '../../components/Input'
-import Codearea from '../../components/Codearea'
-import { createTemplate } from '../../io'
+import SaveIcon from 'react-icons/lib/fa/floppy-o'
+import dynamic from 'next/dynamic'
+import Router from 'next/router'
+import Layout from '~/components/BaseLayout'
+import Widget from '~/components/Widget'
+import Button from '~/components/ActionButton'
+import Input from '~/components/Input'
+import { createTemplate } from '~/io'
+
+const Codearea = dynamic(import('~/components/Codearea'), { ssr: false })
 
 export default class NewTemplate extends Component {
     constructor(props) {
@@ -20,17 +24,21 @@ export default class NewTemplate extends Component {
             content: content.value,
         }
 
-        const res = await createTemplate(data)
-        const json = await res.json()
-        console.log(json)
+        const res = createTemplate(data)
+        res.then(() => {
+            Router.push('/templates')
+        })
     }
 
     render() {
+        const ancestors = [
+            { title: 'Template list', href: '/templates' },
+        ];
         return (
             <Layout>
-                <Widget title="New Template">
+                <Widget title="New Template" ancestors={ancestors}>
                     <Widget.Actions>
-                        <Button onClick={this.handleForm}>Save</Button>
+                        <Button onClick={this.handleForm}><SaveIcon /> Save template</Button>
                     </Widget.Actions>
                     <Widget.Body>
                         <form onSubmit={createTemplate} ref={node => (this.form = node)}>

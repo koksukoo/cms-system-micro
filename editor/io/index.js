@@ -8,6 +8,10 @@ export const fetchPageHierarchy = () => {
     return fetch(`${process.env.BASE_URL}/api/projects/${dummyState.projectId}/pages/`)
 }
 
+export const fetchTemplates = () => {
+    return fetch(`${process.env.BASE_URL}/api/projects/${dummyState.projectId}/templates/`)
+}
+
 export const createTemplate = (data = {}) => {
     return fetch(`${process.env.BASE_URL}/api/projects/${dummyState.projectId}/templates/`, {
         body: JSON.stringify(data),

@@ -1,12 +1,16 @@
+import Link from 'next/link';
 import { rem } from '../utils/style';
 
 const Widget = (props) => {
-    const { title } = props;
+    const { title, ancestors } = props;
 
     return (
         <section className="widget">
             <div className="wh">
-                <h2>{ title }</h2>
+                <h2>{ancestors &&
+                    ancestors.map(a => <Link href={a.href}><a>{a.title}</a></Link>)}
+                    { title }
+                </h2>
                 <Widget.Actions { ...{children: props.children.slice(0, 1)} } />
             </div>
             
@@ -36,6 +40,14 @@ const Widget = (props) => {
                     color: #4A4A4A;
                     font-weight: 400;
                     margin: 10px 0 20px;
+                }
+                h2 a {
+                    color: rgba(0, 0, 0, 0.4);
+                    text-decoration: none;
+                    padding-right: 5px;
+                }
+                h2 a:after {
+                    content: ' /';
                 }
             `}</style>
         </section>

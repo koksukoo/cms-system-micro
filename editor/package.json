@@ -14,6 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "@zeit/next-css": "^0.2.0",
+    "babel-plugin-root-import": "^6.1.0",
     "codemirror": "^5.39.0",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
@@ -23,6 +24,7 @@
     "react": "^16.4.0",
     "react-codemirror2": "^5.0.4",
     "react-dom": "^16.4.0",
+    "react-icons": "^2.2.7",
     "recompose": "^0.27.1"
   },
   "prettier": {

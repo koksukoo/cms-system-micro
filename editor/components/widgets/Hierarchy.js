@@ -1,4 +1,4 @@
-import { rem } from "../../utils/style"
+import { rem } from "~/utils/style"
 
 function renderItems(items, depth = 0) {
     return items.map(item => {

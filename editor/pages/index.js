@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import PlusIcon from 'react-icons/lib/md/add'
 import Layout from '../components/BaseLayout'
 import Widget from '../components/Widget'
 import HierarchyBody from '../components/widgets/Hierarchy'
@@ -10,7 +11,7 @@ const Index = (props) => (
         <Widget title="Site map">
             <Widget.Actions>
                 <Link href="/pages/new">
-                    <Button>+ New Page</Button>
+                    <Button><PlusIcon /> New Page</Button>
                 </Link>
             </Widget.Actions>
 
