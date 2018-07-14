@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { rem } from '../utils/style';
+import { rem } from 'utils/style';
 
 const Widget = (props) => {
     const { title, ancestors } = props;
@@ -8,7 +8,7 @@ const Widget = (props) => {
         <section className="widget">
             <div className="wh">
                 <h2>{ancestors &&
-                    ancestors.map(a => <Link href={a.href}><a>{a.title}</a></Link>)}
+                    ancestors.map(a => <Link key={a.href} href={a.href}><a>{a.title}</a></Link>)}
                     { title }
                 </h2>
                 <Widget.Actions { ...{children: props.children.slice(0, 1)} } />
@@ -18,7 +18,9 @@ const Widget = (props) => {
 
             <style jsx>{`
                 .widget {
-                    box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.2);
+                    box-shadow: 0 1px 9px 0 rgba(0,0,0,0.08);
+                    border-radius: 2px;
+                    border: 1px solid rgba(0,0,0,0.1);
                     padding: ${rem(10)} ${rem(20)};
                 }
                 .wh {

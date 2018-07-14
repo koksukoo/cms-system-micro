@@ -1,4 +1,4 @@
-import { rem } from '../utils/style'
+import { rem } from 'utils/style'
 
 const Textarea = props => {
     const { label, value, ...rest } = props

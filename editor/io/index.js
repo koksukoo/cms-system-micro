@@ -12,11 +12,24 @@ export const fetchTemplates = () => {
     return fetch(`${process.env.BASE_URL}/api/projects/${dummyState.projectId}/templates/`)
 }
 
+export const fetchTemplate = (id) => {
+    return fetch(`${process.env.BASE_URL}/api/projects/${dummyState.projectId}/templates/${id}`)
+}
+
 export const createTemplate = (data = {}) => {
     return fetch(`${process.env.BASE_URL}/api/projects/${dummyState.projectId}/templates/`, {
         body: JSON.stringify(data),
         headers: { 'content-type': 'application/json' },
         method: 'POST',
+        mode: 'cors'
+    })
+}
+
+export const updateTemplate = (id, data = {}) => {
+    return fetch(`${process.env.BASE_URL}/api/projects/${dummyState.projectId}/templates/${id}`, {
+        body: JSON.stringify(data),
+        headers: { 'content-type': 'application/json' },
+        method: 'PUT',
         mode: 'cors'
     })
 }

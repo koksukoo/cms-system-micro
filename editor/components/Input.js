@@ -1,11 +1,25 @@
-import { rem } from '../utils/style'
+import { compose, withHandlers, withState, lifecycle } from 'recompose'
+import { rem } from 'utils/style'
+
+const enhance = compose(
+    withState('value', 'setValue', ''),
+    withHandlers({
+        onValueChange: ({ setValue }) => (_, __, value) => setValue(value),
+    }),
+    lifecycle({
+        componentDidMount() {
+            if (!this.props.initialValue) return;
+            this.setState({ value: this.props.initialValue})
+        }
+    })
+)
 
 const Input = props => {
-    const { label, ...rest } = props
+    const { label, type, value, ...rest } = props
     return (
         <div className="input">
             <label>{label}</label>
-            <input {...rest} />
+            <input value={value} onChange={props.onValueChange} type={type} />
             <style jsx>{`
                 .input {
                     display: flex;
@@ -68,4 +82,4 @@ const Input = props => {
     )
 }
 
-export default Input
+export default enhance(Input)

@@ -7,11 +7,28 @@ const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
 
+const cleanUrls = [
+  {
+    pattern: '/templates/edit/:id',
+    actual: '/templates/edit',
+  },
+  {
+    pattern: '/pages/edit/:id',
+    actual: '/pages/edit',
+  },
+]
+
 app.prepare()
 .then(() => {
   const server = express()
 
   server.use('/api', proxy(process.env.ENGINE_URL))
+
+  cleanUrls.forEach(url => {
+    server.get(url.pattern, (req, res) => {
+      app.render(req, res, url.actual, { id: req.params.id })
+    })
+  })
 
   server.get('*', (req, res) => {
     return handle(req, res)

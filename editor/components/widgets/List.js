@@ -1,13 +1,13 @@
 import Link from "next/link"
-import { rem } from "~/utils/style"
+import { rem } from "utils/style"
 
 const List = props => {
-    console.log(props.children)
+    
     return (
         <div>
-            {props.children.map(child => (
-                <Link href={`/templates/edit/${child.slug}`}>
-                    <a key={child.slug} className="widget-list-item">
+            {props && props.children.map(child => (
+                <Link as={`${child.url}/${child.slug}`} href={`${child.url}?id=${child.slug}`} key={child.slug}>
+                    <a className="widget-list-item">
                         <strong>{child.title}</strong>
                         <style jsx>{`
                         .widget-list-item {

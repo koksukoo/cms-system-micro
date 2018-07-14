@@ -1,7 +1,6 @@
 import {Controlled as Codemirror } from 'react-codemirror2'
-import { compose, withHandlers, withState } from 'recompose';
-import 'codemirror/lib/codemirror.css'
-import { rem } from '../utils/style'
+import { compose, withHandlers, withState, lifecycle } from 'recompose'
+import { rem } from 'utils/style'
 
 if (process.browser) {
     require('codemirror/mode/xml/xml');
@@ -11,6 +10,12 @@ const enhance = compose(
     withState('value', 'setValue', ''),
     withHandlers({
         onValueChange: ({ setValue }) => (_, __, value) => setValue(value),
+    }),
+    lifecycle({
+        componentDidMount() {
+            if (!this.props.initialValue) return;
+            this.setState({ value: this.props.initialValue})
+        }
     })
 )
 
@@ -47,6 +52,7 @@ const Codearea = props => {
 
                 :global(.react-codemirror2) {
                     flex: 1;
+                    max-width: calc(80% - 20px);
                 }
 
                 :global(.cm-s-default) {

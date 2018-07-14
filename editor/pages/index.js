@@ -1,10 +1,10 @@
 import Link from 'next/link'
 import PlusIcon from 'react-icons/lib/md/add'
-import Layout from '../components/BaseLayout'
-import Widget from '../components/Widget'
-import HierarchyBody from '../components/widgets/Hierarchy'
-import { fetchPageHierarchy } from '../io';
-import Button from '../components/ActionButton'
+import Layout from 'components/BaseLayout'
+import Widget from 'components/Widget'
+import HierarchyBody from 'components/widgets/Hierarchy'
+import { fetchPageHierarchy } from 'io';
+import Button from 'components/ActionButton'
 
 const Index = (props) => (
     <Layout>

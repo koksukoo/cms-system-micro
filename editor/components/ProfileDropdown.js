@@ -1,10 +1,10 @@
-import { rem } from '../utils/style';
+import { rem } from 'utils/style';
 
 const ProfileDropdown = () => (
     <nav>
         <button>
             <span>Hello, Mikko</span>
-            <img className="pic" src="../static/img/profile-placeholder.jpg" />
+            <img className="pic" src="/static/img/profile-placeholder.jpg" />
         </button>
 
         <style jsx>{`

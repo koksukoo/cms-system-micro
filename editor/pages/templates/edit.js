@@ -1,51 +1,64 @@
 import { Component } from 'react'
 import SaveIcon from 'react-icons/lib/fa/floppy-o'
 import dynamic from 'next/dynamic'
-import Router from 'next/router'
+import Router, { withRouter } from 'next/router'
 import Layout from 'components/BaseLayout'
 import Widget from 'components/Widget'
 import Button from 'components/ActionButton'
 import Input from 'components/Input'
 import 'codemirror/lib/codemirror.css'
-import { createTemplate } from 'io'
+import { updateTemplate, fetchTemplate } from 'io'
 
 const Codearea = dynamic(import('components/Codearea'), { ssr: false })
 
-export default class NewTemplate extends Component {
+class EditTemplate extends Component {
     constructor(props) {
         super(props)
         this.handleForm = this.handleForm.bind(this)
     }
 
+    static async getInitialProps(ctx) {
+        const { id } = ctx.query
+        const res = await fetchTemplate(id)
+        const data = await res.json()
+
+        return await {
+            template: data
+        }
+    }
+
     async handleForm() {
-        const {title, isActive, content} = this.form
+        const { title, isActive, content } = this.form
+        const { id } = this.props.router.query
         const data = {
             title: title.value,
             isActive: isActive.checked,
             content: content.value,
         }
 
-        const res = createTemplate(data)
+        const res = updateTemplate(id, data)
         res.then(() => {
             Router.push('/templates')
         })
     }
 
     render() {
+        const { template } = this.props
         const ancestors = [
             { title: 'Template list', href: '/templates' },
         ];
+
         return (
             <Layout>
-                <Widget title="New Template" ancestors={ancestors}>
+                <Widget title="Edit Template" ancestors={ancestors}>
                     <Widget.Actions>
                         <Button onClick={this.handleForm}><SaveIcon /> Save template</Button>
                     </Widget.Actions>
                     <Widget.Body>
-                        <form onSubmit={createTemplate} ref={node => (this.form = node)}>
-                            <Input name="title" label="Title" required />
-                            <Input name="isActive" label="Activity" type="checkbox" />
-                            <Codearea name="content" label="Content" rows="20" />
+                        <form onSubmit={updateTemplate} ref={node => (this.form = node)}>
+                            <Input name="title" label="Title" initialValue={template.title} required />
+                            <Input name="isActive" label="Is active" initialChecked={template.isActive} type="checkbox" />
+                            <Codearea name="content" label="Content" initialValue={template.content} rows="20" />
                         </form>
                     </Widget.Body>
                 </Widget>
@@ -58,3 +71,5 @@ export default class NewTemplate extends Component {
         )
     }
 }
+
+export default withRouter(EditTemplate)

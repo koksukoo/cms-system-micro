@@ -1,13 +1,12 @@
 import Link from "next/link"
 import PlusIcon from "react-icons/lib/md/add"
-import Layout from "~/components/BaseLayout"
-import Widget from "~/components/Widget"
-import Button from "~/components/ActionButton"
-import List from "~/components/widgets/List"
-import { fetchTemplates } from "~/io"
+import Layout from "components/BaseLayout"
+import Widget from "components/Widget"
+import Button from "components/ActionButton"
+import List from "components/widgets/List"
+import { fetchTemplates } from "io"
 
 const Templates = props => {
-    console.log(props.templates)
     return (
         <Layout>
             <Widget title="Template list">
@@ -31,7 +30,10 @@ Templates.getInitialProps = async () => {
     const data = await res.json()
 
     return await {
-        templates: data
+        templates: data.map(t => {
+            t.url = `/templates/edit`
+            return t;
+        })
     }
 }
 

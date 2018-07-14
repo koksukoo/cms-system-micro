@@ -1,8 +1,17 @@
 {
-    "presets": [
-      "next/babel"
-    ],
-    "plugins": [
-      ["babel-plugin-root-import"]
+  "presets": ["next/babel"],
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "root": ["./"],
+        "alias": {
+          "components": "./components",
+          "io": "./io",
+          "utils": "./utils",
+          "static": "./static"
+        }
+      }
     ]
+  ]
 }

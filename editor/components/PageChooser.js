@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { withRouter } from "next/router"
-import { rem } from "../utils/style"
+import { rem } from "utils/style"
 
 
 function checkActive(route, match, isExact = false) {
