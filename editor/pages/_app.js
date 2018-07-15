@@ -25,6 +25,11 @@ export default class MyApp extends App {
     const {Component, pageProps} = this.props
     return <Container>
       <Component {...pageProps} />
+      <style jsx global>{`
+        * {
+          box-sizing: border-box;
+        }
+      `}</style>
     </Container>
   }
 }

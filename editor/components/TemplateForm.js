@@ -1,11 +1,18 @@
 import { withFormik, Form } from "formik"
 import SaveIcon from "react-icons/lib/fa/floppy-o"
+import DeleteIcon from "react-icons/lib/fa/trash-o"
 import Router from "next/router"
 import Input from "components/Input"
+import FieldsInput from "components/FieldsInput"
 import Codearea from "components/Codearea"
 import Widget from "components/Widget"
 import Button from "components/ActionButton"
-import { createTemplate, updateTemplate } from "io"
+import { createTemplate, updateTemplate, deleteTemplate } from "io"
+
+const handleDeleteTemplate = event => {
+    event.preventDefault()
+    deleteTemplate(id) // todo !!!
+}
 
 const TemplateForm = ({
     ancestors,
@@ -17,11 +24,17 @@ const TemplateForm = ({
     isSubmitting,
     setFieldValue,
     setFieldTouched,
-    title
+    title,
+    type
 }) => (
     <Form>
         <Widget title={title} ancestors={ancestors}>
             <Widget.Actions>
+                {type === "edit" && (
+                    <Button onClick={handleDeleteTemplate}>
+                        <DeleteIcon /> Delete
+                    </Button>
+                )}
                 <Button type="submit">
                     <SaveIcon /> Save template
                 </Button>
@@ -43,6 +56,11 @@ const TemplateForm = ({
                     onChange={handleChange}
                     onBlur={handleBlur}
                     value={values.isActive}
+                />
+                <FieldsInput
+                    name="fields"
+                    label="Fields"
+                    initialValue={values.fields ? values.fields : null}
                 />
                 <Codearea
                     name="content"

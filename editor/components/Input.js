@@ -59,7 +59,7 @@ const Input = props => {
                     transition: background-color 0.2s;
                 }
 
-                input[type="checkbox"]:before {
+                input[type="checkbox"]:after {
                     content: "";
                     display: inline-block;
                     width: 26px;
@@ -72,15 +72,22 @@ const Input = props => {
 
                 input[type="checkbox"]:checked {
                     justify-content: flex-end;
-                    border: 1px solid rgba(0, 0, 0, 0.2);
                     background-color: #70c4ff;
                     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05),
                         inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05),
                         inset 15px 10px -12px rgba(255, 255, 255, 0.1);
                 }
 
+                input[type="checkbox"]:checked:after {
+                    background-color: #2987bd;
+                }
+
                 input[type="checkbox"]:checked:before {
-                    background-color: #0075b9;
+                    content: '\u2713';
+                    position: absolute;
+                    font-weight: 800;
+                    left: 10px;
+                    color: rgba(255,255,255,0.3);
                 }
             `}</style>
         </div>

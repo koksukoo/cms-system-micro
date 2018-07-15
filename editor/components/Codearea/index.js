@@ -55,7 +55,7 @@ const Codearea = props => {
 
                 :global(.react-codemirror2) {
                     flex: 1;
-                    max-width: calc(80% - 20px);
+                    max-width: 80%;
                 }
 
                 :global(.cm-s-default) {

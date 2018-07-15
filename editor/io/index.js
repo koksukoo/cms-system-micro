@@ -33,3 +33,9 @@ export const updateTemplate = (id, data = {}) => {
         mode: 'cors'
     })
 }
+
+export const deleteTemplate = (id) => {
+    return fetch(`${process.env.BASE_URL}/api/projects/${dummyState.projectId}/templates/${id}`, {
+        method: 'DELETE',
+    })
+}
