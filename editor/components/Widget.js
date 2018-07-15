@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { rem } from 'utils/style';
 
 const Widget = (props) => {
-    const { title, ancestors } = props;
+    const { title, children, ancestors, ...rest } = props;
 
     return (
         <section className="widget">
@@ -11,10 +11,10 @@ const Widget = (props) => {
                     ancestors.map(a => <Link key={a.href} href={a.href}><a>{a.title}</a></Link>)}
                     { title }
                 </h2>
-                <Widget.Actions { ...{children: props.children.slice(0, 1)} } />
+                <Widget.Actions { ...{children: children.slice(0, 1)} } />
             </div>
             
-            <Widget.Body {...{children: props.children.slice(1)} } />
+            <Widget.Body {...{children: children.slice(1)} } {...rest} />
 
             <style jsx>{`
                 .widget {

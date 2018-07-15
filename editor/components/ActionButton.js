@@ -1,12 +1,14 @@
 const ActionButton = (props) => (
-    <a {...props} className="button">
+    <button {...props} className="button">
         {props.children}
         <style jsx>{`
-            & {
+            .button {
                 cursor: pointer;
                 padding: 10px 15px;
                 color: #091c3a;
-                // transition: background 0.2s ease-in-out;
+                background-color: #fff;
+                border: 0;
+                border-bottom: 2px solid transparent;
                 font-size: 0.9rem;
             }
             .button:hover {
@@ -26,7 +28,7 @@ const ActionButton = (props) => (
                 color: #184080;
             }
         `}</style>
-    </a>
+    </button>
 )
 
 export default ActionButton

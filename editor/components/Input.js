@@ -1,31 +1,28 @@
-import { compose, withHandlers, withState, lifecycle } from 'recompose'
-import { rem } from 'utils/style'
-
-const enhance = compose(
-    withState('value', 'setValue', ''),
-    withHandlers({
-        onValueChange: ({ setValue }) => (_, __, value) => setValue(value),
-    }),
-    lifecycle({
-        componentDidMount() {
-            if (!this.props.initialValue) return;
-            this.setState({ value: this.props.initialValue})
-        }
-    })
-)
+import { rem } from "utils/style"
 
 const Input = props => {
-    const { label, type, value, ...rest } = props
+    const { label, type, value, checked, hasError, ...rest } = props
     return (
         <div className="input">
             <label>{label}</label>
-            <input value={value} onChange={props.onValueChange} type={type} />
+            <input
+                value={value}
+                className={hasError ? "error" : ""}
+                type={type}
+                checked={type === "checkbox" ? value : null}
+                {...rest}
+            />
             <style jsx>{`
                 .input {
                     display: flex;
                     flex-direction: row;
                     width: 100%;
                     margin: 5px 0;
+                }
+
+                .error {
+                    border-color: #ff4d4d;
+                    box-shadow: 0 0 5px 0 #ff9f9f;
                 }
 
                 label {
@@ -45,41 +42,49 @@ const Input = props => {
                 }
 
                 input[type="checkbox"] {
+                    cursor: pointer;
                     flex: unset;
-                    width: 40px;
-                    height: 40px;
-                    margin: 0;
+                    width: 60px;
+                    height: 30px;
+                    margin: 5px 0 0;
                     appearance: none;
-                    background-color: #fafafa;
+                    background-color: #fff;
                     border: 1px solid rgba(0, 0, 0, 0.1);
-                    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
-                    padding: 9px;
-                    border-radius: 5px;
+                    padding: 0;
+                    border-radius: 20px;
                     display: flex;
-                    justify-content: center;
+                    justify-content: flex-start;
                     align-items: center;
                     position: relative;
+                    transition: background-color 0.2s;
                 }
 
-                input[type="checkbox"]:active,
-                input[type="checkbox"]:checked:active {
-                    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
+                input[type="checkbox"]:before {
+                    content: "";
+                    display: inline-block;
+                    width: 26px;
+                    height: 26px;
+                    background-color: #ececec;
+                    border-radius: 50%;
+                    margin: 0 2px;
+                    transition: background-color 0.2s;
                 }
 
                 input[type="checkbox"]:checked {
-                    border: 1px solid rgba(0,0,0,0.2);
-                    box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
+                    justify-content: flex-end;
+                    border: 1px solid rgba(0, 0, 0, 0.2);
+                    background-color: #70c4ff;
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05),
+                        inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05),
+                        inset 15px 10px -12px rgba(255, 255, 255, 0.1);
                 }
 
-                input[type="checkbox"]:checked:after {
-                    content: '\\2713';
-                    font-size: ${rem(18)};
-                    font-weight: 800;
-                    color: rgba(0,0,0,0.6);
+                input[type="checkbox"]:checked:before {
+                    background-color: #0075b9;
                 }
             `}</style>
         </div>
     )
 }
 
-export default enhance(Input)
+export default Input

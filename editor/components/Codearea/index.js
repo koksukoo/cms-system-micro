@@ -1,5 +1,6 @@
-import {Controlled as Codemirror } from 'react-codemirror2'
+import { Controlled as Codemirror } from 'react-codemirror2'
 import { compose, withHandlers, withState, lifecycle } from 'recompose'
+import { connect } from 'formik'
 import { rem } from 'utils/style'
 
 if (process.browser) {
@@ -9,25 +10,27 @@ if (process.browser) {
 const enhance = compose(
     withState('value', 'setValue', ''),
     withHandlers({
-        onValueChange: ({ setValue }) => (_, __, value) => setValue(value),
+        onValueChange: ({ setValue }) => (_, __, value) => {
+            setValue(value)
+        },
     }),
     lifecycle({
         componentDidMount() {
-            if (!this.props.initialValue) return;
-            this.setState({ value: this.props.initialValue})
-        }
+            if (!this.props.initialValue || this.props.value) return;
+            this.props.onValueChange(null, null, this.props.initialValue)
+        },
     })
 )
 
 const Codearea = props => {
-    const { label, value, name} = props
+    const { label, value, name, formik} = props
     return (
         <div className="codearea">
             <label>{label}</label>
-            <input type="hidden" name={name} value={value} />
             <Codemirror
                 value={value}
                 onBeforeChange={props.onValueChange}
+                onChange={() => formik.setFieldValue(name, value, false)}
                 options={{
                     mode: 'xml',
                     htmlMode: true,
@@ -64,4 +67,4 @@ const Codearea = props => {
     )
 }
 
-export default enhance(Codearea)
+export default connect(enhance(Codearea))
