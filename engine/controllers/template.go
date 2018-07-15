@@ -51,13 +51,16 @@ func CreateTemplate(w http.ResponseWriter, r *http.Request) {
 
 // UpdateTemplate updates template
 func UpdateTemplate(w http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
-	var template models.PageTemplate
-	if err := json.NewDecoder(r.Body).Decode(&template); err != nil {
+	template, err := dao.FindTemplateByField("slug", mux.Vars(r)["templateId"])
+	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 	template.Modified = time.Now()
+	if err := json.NewDecoder(r.Body).Decode(&template); err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 	if err := dao.UpdateTemplate(template); err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -65,6 +68,7 @@ func UpdateTemplate(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, template)
 }
 
+// DeleteTemplate removes template from database
 func DeleteTemplate(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	if err := dao.DeleteTemplateByField("slug", mux.Vars(r)["templateId"]); err != nil {

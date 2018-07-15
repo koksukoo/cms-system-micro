@@ -9,7 +9,7 @@ import (
 // PageTemplate contains mustache-style template
 type PageTemplate struct {
 	ID        bson.ObjectId `bson:"_id" json:"-"`
-	ProjectID string        `bson:"project_id" json:"projectId"`
+	ProjectID string        `bson:"project_id" json:"-"`
 	Slug      string        `bson:"slug" json:"slug"`
 	Title     string        `bson:"title" json:"title"`
 	Content   string        `bson:"content" json:"content"`
