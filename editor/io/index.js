@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-unfetch'
 
 const dummyState = {
-    projectId: '5b1c2e345d9b1d61551da093',
+    projectId: '5b6ec7c45d9b1d4133a2b24d',
 }
 
 export const fetchPageHierarchy = () => {

@@ -30,7 +30,7 @@ Templates.getInitialProps = async () => {
     const data = await res.json()
 
     return await {
-        templates: data.map(t => {
+        templates: (!data) ? [] : data.map(t => {
             t.url = `/templates/edit`
             return t;
         })

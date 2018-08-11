@@ -7,9 +7,9 @@ import (
 
 // FindAllPages finds all projects for current user.
 // TODO: change to fetch only current user pages
-func (m *MongoDAO) FindAllPages() ([]models.Page, error) {
+func (m *MongoDAO) FindAllPages(projectID string) ([]models.Page, error) {
 	var pages []models.Page
-	err := db.C(PageCollection).Find(bson.M{}).Sort("-created").All(&pages)
+	err := db.C(PageCollection).Find(bson.M{"project_id": projectID}).Sort("-created").All(&pages)
 	return pages, err
 }
 
