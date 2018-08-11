@@ -79,7 +79,6 @@ func GetPagesHierarchy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// var hierarchy map[string]hierarchyItem
 	var hierarchy = make(hierarchyMap)
 
 	for _, page := range pages {
@@ -88,7 +87,6 @@ func GetPagesHierarchy(w http.ResponseWriter, r *http.Request) {
 			page.Ancestors,
 			hierarchyItem{page.Title, page.Slug, page.Position, make(map[string]hierarchyItem), page.Created, page.Template, page.IsActive})
 	}
-	// hierarchy = appendToHierarchy(hierarchy, []string{}, hierarchyItem{"", "", 0, hierarchyMap{}, time.Now(), "", false})
 
 	respondJSON(w, http.StatusOK, hierarchy.SortedSlice())
 }
@@ -100,7 +98,7 @@ func appendToHierarchy(hierarchy map[string]hierarchyItem, ancestors []string, i
 		if ha, ok := hierarchy[ancestors[0]]; ok {
 			ha.Children = appendToHierarchy(ha.Children, ancestors[1:], item)
 		} else {
-			hierarchy[ancestors[0]] = hierarchyItem{"", "", 0, map[string]hierarchyItem{item.Slug: item}, time.Now(), "", false}
+			hierarchy[ancestors[0]] = hierarchyItem{"", "", 0, appendToHierarchy(make(hierarchyMap), ancestors[1:], item), time.Now(), "", false}
 		}
 		return hierarchy
 	}
