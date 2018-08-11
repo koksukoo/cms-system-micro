@@ -57,9 +57,11 @@ func (h hierarchyMap) SortedSlice() []slicedHierarchyItem {
 		var sliced slicedHierarchyItem
 
 		if len(item.Children) > 0 {
-			sliced = slicedHierarchyItem{item.Title, item.Slug, item.Position, item.Children.SortedSlice(), item.Created, item.Template, item.IsActive}
+			sliced = slicedHierarchyItem{item.Title, item.Slug, item.Position, item.Children.SortedSlice(),
+				item.Created, item.Template, item.IsActive}
 		} else {
-			sliced = slicedHierarchyItem{item.Title, item.Slug, item.Position, []slicedHierarchyItem{}, item.Created, item.Template, item.IsActive}
+			sliced = slicedHierarchyItem{item.Title, item.Slug, item.Position, []slicedHierarchyItem{},
+				item.Created, item.Template, item.IsActive}
 		}
 		sorted = append(sorted, sliced)
 	}
@@ -69,7 +71,7 @@ func (h hierarchyMap) SortedSlice() []slicedHierarchyItem {
 
 // GetPagesHierarchy returns a json map of page id's and titles in correct hierarchy
 func GetPagesHierarchy(w http.ResponseWriter, r *http.Request) {
-	pages, err := dao.FindAllPages()
+	pages, err := dao.FindAllPages(mux.Vars(r)["projectId"])
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -85,7 +87,8 @@ func GetPagesHierarchy(w http.ResponseWriter, r *http.Request) {
 		hierarchy = appendToHierarchy(
 			hierarchy,
 			page.Ancestors,
-			hierarchyItem{page.Title, page.Slug, page.Position, make(map[string]hierarchyItem), page.Created, page.Template, page.IsActive})
+			hierarchyItem{page.Title, page.Slug, page.Position, make(hierarchyMap), page.Created,
+				page.Template, page.IsActive})
 	}
 
 	respondJSON(w, http.StatusOK, hierarchy.SortedSlice())
@@ -98,19 +101,22 @@ func appendToHierarchy(hierarchy map[string]hierarchyItem, ancestors []string, i
 		if ha, ok := hierarchy[ancestors[0]]; ok {
 			ha.Children = appendToHierarchy(ha.Children, ancestors[1:], item)
 		} else {
-			hierarchy[ancestors[0]] = hierarchyItem{"", "", 0, appendToHierarchy(make(hierarchyMap), ancestors[1:], item), time.Now(), "", false}
+			hierarchy[ancestors[0]] = hierarchyItem{"", "", 0, appendToHierarchy(make(hierarchyMap),
+				ancestors[1:], item), time.Now(), "", false}
 		}
 		return hierarchy
 	}
 
-	var children map[string]hierarchyItem
+	// children may be appended to hierarchy before actual parent
+	var children hierarchyMap
 
 	if parent, ok := hierarchy[item.Slug]; ok {
 		children = parent.Children
 	} else {
-		children = make(map[string]hierarchyItem)
+		children = make(hierarchyMap)
 	}
-	hierarchy[item.Slug] = hierarchyItem{item.Title, item.Slug, item.Position, children, item.Created, item.Template, item.IsActive}
+	hierarchy[item.Slug] = hierarchyItem{item.Title, item.Slug, item.Position, children, item.Created,
+		item.Template, item.IsActive}
 
 	return hierarchy
 }
@@ -127,6 +133,7 @@ func CreatePage(w http.ResponseWriter, r *http.Request) {
 	page.Slug, _ = hashid.Encode([]int{int(page.ID.Counter())})
 	page.Created = time.Now()
 	page.Modified = time.Now()
+	page.ProjectID = mux.Vars(r)["projectId"]
 
 	if page.Parent != "" {
 		parent, err := dao.FindPageByField("slug", page.Parent)
@@ -149,6 +156,9 @@ func GetPage(w http.ResponseWriter, r *http.Request) {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+	if page.ProjectID != mux.Vars(r)["projectId"] {
+		respondError(w, http.StatusNotFound, "Page not found!")
+	}
 	respondJSON(w, http.StatusOK, page)
 }
 
@@ -161,6 +171,11 @@ func UpdatePage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	page.Modified = time.Now()
+	if page.ProjectID != mux.Vars(r)["projectId"] {
+		respondError(w, http.StatusNotFound, "Page not found!")
+		return
+	}
+	// in case page parent is changed...
 	parent, err := dao.FindPageByField("slug", page.Parent)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
@@ -178,6 +193,11 @@ func UpdatePage(w http.ResponseWriter, r *http.Request) {
 // DeletePage deletes a sigle page
 func DeletePage(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
+	page, err := dao.FindPageByField("slug", mux.Vars(r)["pageId"])
+	if err != nil || page.ProjectID != mux.Vars(r)["projectId"] {
+		respondError(w, http.StatusInternalServerError, "Could not delete the page.")
+		return
+	}
 	if err := dao.DeletePageByField("slug", mux.Vars(r)["pageId"]); err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
 		return
