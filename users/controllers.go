@@ -3,7 +3,10 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
+	uuid "github.com/satori/go.uuid"
+	hashids "github.com/speps/go-hashids"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -11,6 +14,17 @@ import (
 type Credentials struct {
 	Password string `json:"password" db:"password"`
 	Username string `json:"username" db:"username"`
+	ID       int    `json:"-" db:"id"`
+}
+
+var hashid = hashids.HashID{}
+
+func init() {
+	hd := hashids.NewData()
+	hd.Salt = "secret_salt"
+	hd.MinLength = 8
+	h, _ := hashids.NewWithData(hd)
+	hashid = *h
 }
 
 func registerController(w http.ResponseWriter, r *http.Request) {
@@ -42,14 +56,21 @@ func loginController(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&credentials)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
-	res := db.QueryRow("SELECT password FROM users WHERE username LIKE ?", credentials.Username)
-
-	var dbCredentials Credentials
-	err = res.Scan(&dbCredentials.Password)
+	stmt, err := db.Prepare("SELECT * FROM users WHERE username LIKE (?)")
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	res := stmt.QueryRow(credentials.Username)
+
+	var dbCredentials Credentials
+	err = res.Scan(&dbCredentials.ID, &dbCredentials.Username, &dbCredentials.Password)
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	if err = bcrypt.CompareHashAndPassword([]byte(dbCredentials.Password), []byte(credentials.Password)); err != nil {
@@ -57,8 +78,22 @@ func loginController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// there we would send jwt token back
-	respondJSON(w, http.StatusOK, map[string]string{"token": "123123"})
+	sessionToken, _ := uuid.NewV4()
+	hash, _ := hashid.Encode([]int{dbCredentials.ID})
+	// other services can access user hash from redis
+	_, err = cache.Do("SETEX", sessionToken.String(), "86400", hash)
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:    "cms_session",
+		Value:   sessionToken.String(),
+		Expires: time.Now().AddDate(0, 0, 1),
+	})
+
+	respondJSON(w, http.StatusOK, map[string]string{"token": sessionToken.String()})
 }
 
 func respondError(w http.ResponseWriter, code int, msg string) {
