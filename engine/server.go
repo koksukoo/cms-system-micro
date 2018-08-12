@@ -3,7 +3,9 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/mikkokokkoniemi/cms-system-micro/engine/controllers"
 	"github.com/rs/cors"
@@ -33,13 +35,15 @@ func main() {
 	tr.HandleFunc("/{templateId}", controllers.UpdateTemplate).Methods("PUT")
 	tr.HandleFunc("/{templateId}", controllers.DeleteTemplate).Methods("DELETE")
 
-	handler := cors.New(cors.Options{
+	corsHandler := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowCredentials: false,
 		AllowedMethods:   []string{"GET", "POST", "OPTIONS", "PUT", "DELETE"},
 		ExposedHeaders:   []string{"Access-Control-Allow-Origin", "Date", "Server", "Keep-Alive", "Connection", "Transfer-Encoding", "Content-Type"},
 	}).Handler(r)
 
-	log.Fatal(http.ListenAndServe(":6000", handler))
+	loggedRouter := handlers.LoggingHandler(os.Stdout, corsHandler)
+
+	log.Fatal(http.ListenAndServe(":6000", loggedRouter))
 
 }
