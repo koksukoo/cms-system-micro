@@ -1,7 +1,7 @@
 const express = require('express')
 const next = require('next')
-const fetch = require('isomorphic-unfetch')
 const proxy = require('express-http-proxy')
+const cookieParser = require('cookie-parser')
 
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
@@ -22,6 +22,7 @@ app.prepare()
 .then(() => {
   const server = express()
 
+  server.use(cookieParser())
   server.use('/api', proxy(process.env.ENGINE_URL))
 
   cleanUrls.forEach(url => {

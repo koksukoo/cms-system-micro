@@ -5,6 +5,7 @@ import Widget from 'components/Widget'
 import HierarchyBody from 'components/widgets/Hierarchy'
 import { fetchPageHierarchy } from 'io';
 import Button from 'components/ActionButton'
+import { redirectIfNotAuthenticated } from 'utils/helpers'
 
 const Index = (props) => (
     <Layout>
@@ -22,7 +23,10 @@ const Index = (props) => (
     </Layout>
 )
 
-Index.getInitialProps = async () => {
+Index.getInitialProps = async (ctx) => {
+    if (redirectIfNotAuthenticated(ctx)) {
+        return {};
+    }
     const res = await fetchPageHierarchy()
     const data = await res.json()
     

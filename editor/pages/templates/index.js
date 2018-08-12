@@ -5,6 +5,7 @@ import Widget from "components/Widget"
 import Button from "components/ActionButton"
 import List from "components/widgets/List"
 import { fetchTemplates } from "io"
+import { redirectIfNotAuthenticated } from 'utils/helpers'
 
 const Templates = props => {
     return (
@@ -25,7 +26,10 @@ const Templates = props => {
     )
 }
 
-Templates.getInitialProps = async () => {
+Templates.getInitialProps = async (ctx) => {
+    if (redirectIfNotAuthenticated(ctx)) {
+        return {};
+    }
     const res = await fetchTemplates()
     const data = await res.json()
 

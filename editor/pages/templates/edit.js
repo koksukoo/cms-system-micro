@@ -5,11 +5,16 @@ import Layout from "components/BaseLayout"
 import TemplateForm from "components/TemplateForm"
 import "codemirror/lib/codemirror.css"
 import { fetchTemplate } from "io"
+import { redirectIfNotAuthenticated } from 'utils/helpers'
 
 const Codearea = dynamic(import("components/Codearea"), { ssr: false })
 
 class EditTemplate extends Component {
     static async getInitialProps(ctx) {
+        if (redirectIfNotAuthenticated(ctx)) {
+            return {};
+        }
+
         const { id } = ctx.query
         const res = await fetchTemplate(id)
         const data = await res.json()

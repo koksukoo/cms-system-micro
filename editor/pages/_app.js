@@ -1,6 +1,8 @@
 import App, {Container} from 'next/app'
 import dynamic from 'next/dynamic'
+import Router from 'next/router'
 import React from 'react'
+import cookies from 'js-cookie';
 
 /* VENDORS */
 import 'codemirror/lib/codemirror.css'
@@ -20,6 +22,7 @@ export default class MyApp extends App {
 
     return {pageProps}
   }
+  static on
 
   render () {
     const {Component, pageProps} = this.props
