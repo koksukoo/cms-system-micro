@@ -1,0 +1,6 @@
+# filename: config.toml
+[Projects]
+endpoint = "http://localhost:6000"
+
+[server]
+port = ":5004"

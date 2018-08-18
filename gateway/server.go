@@ -5,9 +5,25 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/BurntSushi/toml"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
+
+type Config struct {
+	Server   confServer
+	Projects confProjects
+}
+
+type confServer struct {
+	Port string
+}
+
+type confProjects struct {
+	Endpoint string
+}
+
+var conf Config
 
 func authMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -20,7 +36,7 @@ func authMiddleware(next http.Handler) http.Handler {
 
 // HandleProjectsRequest redirects request to engine service
 func HandleProjectsRequest(w http.ResponseWriter, r *http.Request) {
-	url := "http://localhost:6000"
+	url := conf.Projects.Endpoint
 	engineProxy := NewProxy(url)
 	engineProxy.handle(w, r)
 }
@@ -32,5 +48,11 @@ func main() {
 	pr.Use(authMiddleware)
 
 	loggedRouter := handlers.LoggingHandler(os.Stdout, r)
-	log.Fatal(http.ListenAndServe(":5004", loggedRouter))
+	log.Fatal(http.ListenAndServe(conf.Server.Port, loggedRouter))
+}
+
+func init() {
+	if _, err := toml.DecodeFile("./config.toml", &conf); err != nil {
+		log.Fatal(err)
+	}
 }
