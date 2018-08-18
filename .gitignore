@@ -5,3 +5,4 @@ node_modules/
 /gateway/gateway
 /engine/config.toml
 config.toml
+/vendor
