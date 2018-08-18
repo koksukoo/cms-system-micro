@@ -1,0 +1,10 @@
+# filename: config.toml
+[database]
+server = "localhost"
+database = "cms_engine"
+
+[hashids]
+salt = "secret_salt"
+
+[server]
+port = ":6000"

@@ -5,11 +5,29 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/BurntSushi/toml"
+
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/mikkokokkoniemi/cms-system-micro/engine/controllers"
 	"github.com/rs/cors"
 )
+
+type Config struct {
+	Server confServer
+}
+
+type confServer struct {
+	Port string
+}
+
+var conf Config
+
+func init() {
+	if _, err := toml.DecodeFile("./config.toml", &conf); err != nil {
+		log.Fatal(err)
+	}
+}
 
 func main() {
 	r := mux.NewRouter()
@@ -44,6 +62,6 @@ func main() {
 
 	loggedRouter := handlers.LoggingHandler(os.Stdout, corsHandler)
 
-	log.Fatal(http.ListenAndServe(":6000", loggedRouter))
+	log.Fatal(http.ListenAndServe(conf.Server.Port, loggedRouter))
 
 }

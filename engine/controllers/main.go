@@ -2,22 +2,43 @@ package controllers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
+	"github.com/BurntSushi/toml"
 	"github.com/mikkokokkoniemi/cms-system-micro/engine/database"
 	hashids "github.com/speps/go-hashids"
 )
 
+type Config struct {
+	Database confDB
+	Hashids  confHash
+}
+
+type confDB struct {
+	Server   string
+	Database string
+}
+
+type confHash struct {
+	Salt string
+}
+
 var dao = database.MongoDAO{}
 var hashid = hashids.HashID{}
+var conf Config
 
 func init() {
-	dao.Server = "localhost"
-	dao.Database = "cms_engine"
+	if _, err := toml.DecodeFile("./config.toml", &conf); err != nil {
+		log.Fatal(err)
+	}
+
+	dao.Server = conf.Database.Server
+	dao.Database = conf.Database.Database
 	dao.Connect()
 
 	hd := hashids.NewData()
-	hd.Salt = "secret_salt"
+	hd.Salt = conf.Hashids.Salt
 	hd.MinLength = 8
 	h, _ := hashids.NewWithData(hd)
 	hashid = *h
