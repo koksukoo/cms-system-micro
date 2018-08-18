@@ -21,7 +21,7 @@ var hashid = hashids.HashID{}
 
 func init() {
 	hd := hashids.NewData()
-	hd.Salt = "secret_salt"
+	hd.Salt = conf.Hashids.Salt
 	hd.MinLength = 8
 	h, _ := hashids.NewWithData(hd)
 	hashid = *h

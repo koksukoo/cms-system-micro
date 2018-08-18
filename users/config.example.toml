@@ -1,0 +1,17 @@
+# filename: config.toml
+[database]
+server = "127.0.0.1"
+port = "3306"
+user = "root"
+password = "secret"
+database = "cms_userdb"
+
+[hashids]
+salt = "secret_salt"
+
+[server]
+port = ":6004"
+
+[redis]
+server = "localhost"
+port = ":6379"

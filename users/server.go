@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -32,11 +33,17 @@ func main() {
 	}).Handler(r)
 
 	loggedRouter := handlers.LoggingHandler(os.Stdout, corsHandler)
-	log.Fatal(http.ListenAndServe(":7000", loggedRouter))
+	log.Fatal(http.ListenAndServe(conf.Server.Port, loggedRouter))
 }
 
 func initDB() {
-	conn, err := sql.Open("mysql", "root:secret@/cms_userdb")
+	connString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+		conf.Database.User,
+		conf.Database.Password,
+		conf.Database.Server,
+		conf.Database.Port,
+		conf.Database.Database)
+	conn, err := sql.Open("mysql", connString)
 	if err != nil {
 		log.Fatal(err.Error())
 	}

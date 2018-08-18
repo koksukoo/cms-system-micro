@@ -4,3 +4,4 @@ node_modules/
 /users/users
 /gateway/gateway
 /engine/config.toml
+config.toml
