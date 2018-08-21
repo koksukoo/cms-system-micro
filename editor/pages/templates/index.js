@@ -19,7 +19,7 @@ const Templates = props => {
                     </Link>
                 </Widget.Actions>
                 <Widget.Body>
-                    <List children={props.templates} />
+                    <List children={props.templates} error={props.error} />
                 </Widget.Body>
             </Widget>
         </Layout>
@@ -34,10 +34,11 @@ Templates.getInitialProps = async (ctx) => {
     const data = await res.json()
 
     return await {
-        templates: (!data) ? [] : data.map(t => {
+        templates: (!data.length) ? [] : data.map(t => {
             t.url = `/templates/edit`
             return t;
-        })
+        }),
+        error: data.error || null,
     }
 }
 

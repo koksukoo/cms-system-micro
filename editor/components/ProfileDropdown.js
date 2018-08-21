@@ -3,7 +3,7 @@ import { rem } from 'utils/style';
 const ProfileDropdown = () => (
     <nav>
         <button>
-            <span>Hello, Mikko</span>
+            <span>Hello, Person</span>
             <img className="pic" src="/static/img/profile-placeholder.jpg" />
         </button>
 

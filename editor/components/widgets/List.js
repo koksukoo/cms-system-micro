@@ -1,10 +1,12 @@
 import Link from "next/link"
 import { rem } from "utils/style"
+import ErrorMessage from "components/ErrorMessage";
 
 const List = props => {
     
     return (
         <div>
+            {!!props.error && <ErrorMessage>Network Error: {props.error}</ErrorMessage>}
             {props && props.children.map(child => (
                 <Link as={`${child.url}/${child.slug}`} href={`${child.url}?id=${child.slug}`} key={child.slug}>
                     <a className="widget-list-item">

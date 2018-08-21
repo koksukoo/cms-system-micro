@@ -78,7 +78,7 @@ func loginController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sessionToken, _ := uuid.NewV4()
+	sessionToken := uuid.NewV4()
 	hash, _ := hashid.Encode([]int{dbCredentials.ID})
 	// other services can access user hash from redis
 	_, err = cache.Do("SETEX", sessionToken.String(), "86400", hash)
@@ -89,6 +89,7 @@ func loginController(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, &http.Cookie{
 		Name:    "cms_session",
+		Path:    "/",
 		Value:   sessionToken.String(),
 		Expires: time.Now().AddDate(0, 0, 1),
 	})

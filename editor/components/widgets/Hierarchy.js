@@ -1,6 +1,10 @@
 import { rem } from "utils/style"
+import ErrorMessage from "components/ErrorMessage";
 
 function renderItems(items, depth = 0) {
+    if (!items.length) {
+        return ''
+    }
     return items.map(item => {
         const activity = item.isActive ? "active" : "inactive"
         return (
@@ -20,6 +24,7 @@ function renderItems(items, depth = 0) {
 const Hierarchy = props => {
     return (
         <div className="hierarchy">
+            {!!props.children.error && <ErrorMessage>Network Error: {props.children.error}</ErrorMessage>}
             {renderItems(props.children)}
             <style global jsx>{`
                 .hierarchy > .widget-hierarchy-item {

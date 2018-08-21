@@ -23,7 +23,7 @@ app.prepare()
   const server = express()
 
   server.use(cookieParser())
-  server.use('/api', proxy(process.env.ENGINE_URL))
+  server.use('/api', proxy(process.env.API_URL))
 
   cleanUrls.forEach(url => {
     server.get(url.pattern, (req, res) => {

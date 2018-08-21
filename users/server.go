@@ -22,8 +22,8 @@ func main() {
 	initCache()
 	r := mux.NewRouter()
 
-	r.HandleFunc("/login", loginController).Methods("POST")
-	r.HandleFunc("/register", registerController).Methods("POST")
+	r.HandleFunc("/users/login", loginController).Methods("POST")
+	r.HandleFunc("/users/register", registerController).Methods("POST")
 
 	corsHandler := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
@@ -51,7 +51,8 @@ func initDB() {
 }
 
 func initCache() {
-	conn, err := redis.DialURL("redis://localhost:6379")
+	connString := fmt.Sprintf("redis://%s%s", conf.Redis.Server, conf.Redis.Port)
+	conn, err := redis.DialURL(connString)
 	if err != nil {
 		log.Fatal(err.Error())
 	}

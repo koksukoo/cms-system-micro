@@ -5,6 +5,7 @@ import Input from "components/Input"
 import Button from "components/ActionButton"
 import Hint from "components/Hint"
 import Widget from "components/Widget"
+import { login } from "io"
 
 const LoginForm = ({
     errors,
@@ -12,8 +13,6 @@ const LoginForm = ({
     handleChange,
     handleBlur,
     isSubmitting,
-    setFieldValue,
-    setFieldTouched
 }) => (
     <Form>
         <Widget title="Log in, please...">
@@ -29,13 +28,14 @@ const LoginForm = ({
                     label="Email"
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    hasError={touched.title && errors.title}
+                    hasError={touched.username && errors.username}
                 />
                 <Input
                     name="password"
                     label="Password"
                     onChange={handleChange}
                     onBlur={handleBlur}
+                    hasError={touched.password && errors.password}
                 />
                 <br />
                 <Hint>
@@ -51,15 +51,21 @@ const LoginForm = ({
 )
 
 export default withFormik({
+    mapPropsToValues: props => ({ username: '', password: '' }),
     validate(values, props) {
         const err = {}
-        if (!values.title) {
-            err.title = "Required"
+        if (!values.username) {
+            err.username = "Required"
+        }
+        if (!values.password) {
+            err.password = "Required"
         }
         return err
     },
     async handleSubmit(values, { props, setSubmitting, setErrors }) {
+        const res = await login(values)
+        console.log(res);
         setSubmitting(false)
-        // Router.push("/")
-    }
+        Router.push("/")
+    },
 })(LoginForm)
